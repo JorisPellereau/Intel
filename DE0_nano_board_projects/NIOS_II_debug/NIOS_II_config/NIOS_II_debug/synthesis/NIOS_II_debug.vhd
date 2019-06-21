@@ -8,12 +8,11 @@ use IEEE.numeric_std.all;
 
 entity NIOS_II_debug is
 	port (
-		clk_clk                                    : in  std_logic                     := '0';             --                                 clk.clk
-		pio_adc_channel_external_connection_export : in  std_logic_vector(2 downto 0)  := (others => '0'); -- pio_adc_channel_external_connection.export
-		pio_adc_cmd_external_connection_export     : out std_logic_vector(3 downto 0);                     --     pio_adc_cmd_external_connection.export
-		pio_adc_data_external_connection_export    : in  std_logic_vector(11 downto 0) := (others => '0'); --    pio_adc_data_external_connection.export
-		pio_uart_data_external_connection_export   : in  std_logic_vector(7 downto 0)  := (others => '0'); --   pio_uart_data_external_connection.export
-		reset_reset_n                              : in  std_logic                     := '0'              --                               reset.reset_n
+		clk_clk                                              : in  std_logic                     := '0';             --                                           clk.clk
+		pi_adc_channel_data_valid_external_connection_export : in  std_logic_vector(3 downto 0)  := (others => '0'); -- pi_adc_channel_data_valid_external_connection.export
+		pi_adc_data_external_connection_export               : in  std_logic_vector(11 downto 0) := (others => '0'); --               pi_adc_data_external_connection.export
+		po_adc_cmd_external_connection_export                : out std_logic_vector(3 downto 0);                     --                po_adc_cmd_external_connection.export
+		reset_reset_n                                        : in  std_logic                     := '0'              --                                         reset.reset_n
 	);
 end entity NIOS_II_debug;
 
@@ -80,17 +79,27 @@ architecture rtl of NIOS_II_debug is
 		);
 	end component NIOS_II_debug_onchip_memory2;
 
-	component NIOS_II_debug_pio_adc_channel is
+	component NIOS_II_debug_pi_adc_channel_data_valid is
 		port (
 			clk      : in  std_logic                     := 'X';             -- clk
 			reset_n  : in  std_logic                     := 'X';             -- reset_n
 			address  : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- address
 			readdata : out std_logic_vector(31 downto 0);                    -- readdata
-			in_port  : in  std_logic_vector(2 downto 0)  := (others => 'X')  -- export
+			in_port  : in  std_logic_vector(3 downto 0)  := (others => 'X')  -- export
 		);
-	end component NIOS_II_debug_pio_adc_channel;
+	end component NIOS_II_debug_pi_adc_channel_data_valid;
 
-	component NIOS_II_debug_pio_adc_cmd is
+	component NIOS_II_debug_pi_adc_data is
+		port (
+			clk      : in  std_logic                     := 'X';             -- clk
+			reset_n  : in  std_logic                     := 'X';             -- reset_n
+			address  : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- address
+			readdata : out std_logic_vector(31 downto 0);                    -- readdata
+			in_port  : in  std_logic_vector(11 downto 0) := (others => 'X')  -- export
+		);
+	end component NIOS_II_debug_pi_adc_data;
+
+	component NIOS_II_debug_po_adc_cmd is
 		port (
 			clk        : in  std_logic                     := 'X';             -- clk
 			reset_n    : in  std_logic                     := 'X';             -- reset_n
@@ -101,27 +110,7 @@ architecture rtl of NIOS_II_debug is
 			readdata   : out std_logic_vector(31 downto 0);                    -- readdata
 			out_port   : out std_logic_vector(3 downto 0)                      -- export
 		);
-	end component NIOS_II_debug_pio_adc_cmd;
-
-	component NIOS_II_debug_pio_adc_data is
-		port (
-			clk      : in  std_logic                     := 'X';             -- clk
-			reset_n  : in  std_logic                     := 'X';             -- reset_n
-			address  : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- address
-			readdata : out std_logic_vector(31 downto 0);                    -- readdata
-			in_port  : in  std_logic_vector(11 downto 0) := (others => 'X')  -- export
-		);
-	end component NIOS_II_debug_pio_adc_data;
-
-	component NIOS_II_debug_pio_uart_data is
-		port (
-			clk      : in  std_logic                     := 'X';             -- clk
-			reset_n  : in  std_logic                     := 'X';             -- reset_n
-			address  : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- address
-			readdata : out std_logic_vector(31 downto 0);                    -- readdata
-			in_port  : in  std_logic_vector(7 downto 0)  := (others => 'X')  -- export
-		);
-	end component NIOS_II_debug_pio_uart_data;
+	end component NIOS_II_debug_po_adc_cmd;
 
 	component NIOS_II_debug_sysid_qsys is
 		port (
@@ -171,17 +160,15 @@ architecture rtl of NIOS_II_debug is
 			onchip_memory2_s1_byteenable                 : out std_logic_vector(3 downto 0);                     -- byteenable
 			onchip_memory2_s1_chipselect                 : out std_logic;                                        -- chipselect
 			onchip_memory2_s1_clken                      : out std_logic;                                        -- clken
-			pio_adc_channel_s1_address                   : out std_logic_vector(1 downto 0);                     -- address
-			pio_adc_channel_s1_readdata                  : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
-			pio_adc_cmd_s1_address                       : out std_logic_vector(1 downto 0);                     -- address
-			pio_adc_cmd_s1_write                         : out std_logic;                                        -- write
-			pio_adc_cmd_s1_readdata                      : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
-			pio_adc_cmd_s1_writedata                     : out std_logic_vector(31 downto 0);                    -- writedata
-			pio_adc_cmd_s1_chipselect                    : out std_logic;                                        -- chipselect
-			pio_adc_data_s1_address                      : out std_logic_vector(1 downto 0);                     -- address
-			pio_adc_data_s1_readdata                     : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
-			pio_uart_data_s1_address                     : out std_logic_vector(1 downto 0);                     -- address
-			pio_uart_data_s1_readdata                    : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
+			pi_adc_channel_data_valid_s1_address         : out std_logic_vector(1 downto 0);                     -- address
+			pi_adc_channel_data_valid_s1_readdata        : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
+			pi_adc_data_s1_address                       : out std_logic_vector(1 downto 0);                     -- address
+			pi_adc_data_s1_readdata                      : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
+			po_adc_cmd_s1_address                        : out std_logic_vector(1 downto 0);                     -- address
+			po_adc_cmd_s1_write                          : out std_logic;                                        -- write
+			po_adc_cmd_s1_readdata                       : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
+			po_adc_cmd_s1_writedata                      : out std_logic_vector(31 downto 0);                    -- writedata
+			po_adc_cmd_s1_chipselect                     : out std_logic;                                        -- chipselect
 			sysid_qsys_control_slave_address             : out std_logic_vector(0 downto 0);                     -- address
 			sysid_qsys_control_slave_readdata            : in  std_logic_vector(31 downto 0) := (others => 'X')  -- readdata
 		);
@@ -364,17 +351,15 @@ architecture rtl of NIOS_II_debug is
 	signal mm_interconnect_0_onchip_memory2_s1_write                     : std_logic;                     -- mm_interconnect_0:onchip_memory2_s1_write -> onchip_memory2:write
 	signal mm_interconnect_0_onchip_memory2_s1_writedata                 : std_logic_vector(31 downto 0); -- mm_interconnect_0:onchip_memory2_s1_writedata -> onchip_memory2:writedata
 	signal mm_interconnect_0_onchip_memory2_s1_clken                     : std_logic;                     -- mm_interconnect_0:onchip_memory2_s1_clken -> onchip_memory2:clken
-	signal mm_interconnect_0_pio_adc_cmd_s1_chipselect                   : std_logic;                     -- mm_interconnect_0:pio_adc_cmd_s1_chipselect -> pio_adc_cmd:chipselect
-	signal mm_interconnect_0_pio_adc_cmd_s1_readdata                     : std_logic_vector(31 downto 0); -- pio_adc_cmd:readdata -> mm_interconnect_0:pio_adc_cmd_s1_readdata
-	signal mm_interconnect_0_pio_adc_cmd_s1_address                      : std_logic_vector(1 downto 0);  -- mm_interconnect_0:pio_adc_cmd_s1_address -> pio_adc_cmd:address
-	signal mm_interconnect_0_pio_adc_cmd_s1_write                        : std_logic;                     -- mm_interconnect_0:pio_adc_cmd_s1_write -> mm_interconnect_0_pio_adc_cmd_s1_write:in
-	signal mm_interconnect_0_pio_adc_cmd_s1_writedata                    : std_logic_vector(31 downto 0); -- mm_interconnect_0:pio_adc_cmd_s1_writedata -> pio_adc_cmd:writedata
-	signal mm_interconnect_0_pio_uart_data_s1_readdata                   : std_logic_vector(31 downto 0); -- pio_uart_data:readdata -> mm_interconnect_0:pio_uart_data_s1_readdata
-	signal mm_interconnect_0_pio_uart_data_s1_address                    : std_logic_vector(1 downto 0);  -- mm_interconnect_0:pio_uart_data_s1_address -> pio_uart_data:address
-	signal mm_interconnect_0_pio_adc_data_s1_readdata                    : std_logic_vector(31 downto 0); -- pio_adc_data:readdata -> mm_interconnect_0:pio_adc_data_s1_readdata
-	signal mm_interconnect_0_pio_adc_data_s1_address                     : std_logic_vector(1 downto 0);  -- mm_interconnect_0:pio_adc_data_s1_address -> pio_adc_data:address
-	signal mm_interconnect_0_pio_adc_channel_s1_readdata                 : std_logic_vector(31 downto 0); -- pio_adc_channel:readdata -> mm_interconnect_0:pio_adc_channel_s1_readdata
-	signal mm_interconnect_0_pio_adc_channel_s1_address                  : std_logic_vector(1 downto 0);  -- mm_interconnect_0:pio_adc_channel_s1_address -> pio_adc_channel:address
+	signal mm_interconnect_0_pi_adc_data_s1_readdata                     : std_logic_vector(31 downto 0); -- pi_adc_data:readdata -> mm_interconnect_0:pi_adc_data_s1_readdata
+	signal mm_interconnect_0_pi_adc_data_s1_address                      : std_logic_vector(1 downto 0);  -- mm_interconnect_0:pi_adc_data_s1_address -> pi_adc_data:address
+	signal mm_interconnect_0_pi_adc_channel_data_valid_s1_readdata       : std_logic_vector(31 downto 0); -- pi_adc_channel_data_valid:readdata -> mm_interconnect_0:pi_adc_channel_data_valid_s1_readdata
+	signal mm_interconnect_0_pi_adc_channel_data_valid_s1_address        : std_logic_vector(1 downto 0);  -- mm_interconnect_0:pi_adc_channel_data_valid_s1_address -> pi_adc_channel_data_valid:address
+	signal mm_interconnect_0_po_adc_cmd_s1_chipselect                    : std_logic;                     -- mm_interconnect_0:po_adc_cmd_s1_chipselect -> po_adc_cmd:chipselect
+	signal mm_interconnect_0_po_adc_cmd_s1_readdata                      : std_logic_vector(31 downto 0); -- po_adc_cmd:readdata -> mm_interconnect_0:po_adc_cmd_s1_readdata
+	signal mm_interconnect_0_po_adc_cmd_s1_address                       : std_logic_vector(1 downto 0);  -- mm_interconnect_0:po_adc_cmd_s1_address -> po_adc_cmd:address
+	signal mm_interconnect_0_po_adc_cmd_s1_write                         : std_logic;                     -- mm_interconnect_0:po_adc_cmd_s1_write -> mm_interconnect_0_po_adc_cmd_s1_write:in
+	signal mm_interconnect_0_po_adc_cmd_s1_writedata                     : std_logic_vector(31 downto 0); -- mm_interconnect_0:po_adc_cmd_s1_writedata -> po_adc_cmd:writedata
 	signal irq_mapper_receiver0_irq                                      : std_logic;                     -- jtag_uart:av_irq -> irq_mapper:receiver0_irq
 	signal cpu_irq_irq                                                   : std_logic_vector(31 downto 0); -- irq_mapper:sender_irq -> CPU:irq
 	signal rst_controller_reset_out_reset                                : std_logic;                     -- rst_controller:reset_out -> [irq_mapper:reset, mm_interconnect_0:CPU_reset_reset_bridge_in_reset_reset, onchip_memory2:reset, rst_controller_reset_out_reset:in, rst_translator:in_reset]
@@ -384,9 +369,9 @@ architecture rtl of NIOS_II_debug is
 	signal reset_reset_n_ports_inv                                       : std_logic;                     -- reset_reset_n:inv -> [rst_controller:reset_in0, rst_controller_001:reset_in0]
 	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_read_ports_inv  : std_logic;                     -- mm_interconnect_0_jtag_uart_avalon_jtag_slave_read:inv -> jtag_uart:av_read_n
 	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_write_ports_inv : std_logic;                     -- mm_interconnect_0_jtag_uart_avalon_jtag_slave_write:inv -> jtag_uart:av_write_n
-	signal mm_interconnect_0_pio_adc_cmd_s1_write_ports_inv              : std_logic;                     -- mm_interconnect_0_pio_adc_cmd_s1_write:inv -> pio_adc_cmd:write_n
+	signal mm_interconnect_0_po_adc_cmd_s1_write_ports_inv               : std_logic;                     -- mm_interconnect_0_po_adc_cmd_s1_write:inv -> po_adc_cmd:write_n
 	signal rst_controller_reset_out_reset_ports_inv                      : std_logic;                     -- rst_controller_reset_out_reset:inv -> [CPU:reset_n, jtag_uart:rst_n]
-	signal rst_controller_001_reset_out_reset_ports_inv                  : std_logic;                     -- rst_controller_001_reset_out_reset:inv -> [pio_adc_channel:reset_n, pio_adc_cmd:reset_n, pio_adc_data:reset_n, pio_uart_data:reset_n, sysid_qsys:reset_n]
+	signal rst_controller_001_reset_out_reset_ports_inv                  : std_logic;                     -- rst_controller_001_reset_out_reset:inv -> [pi_adc_channel_data_valid:reset_n, pi_adc_data:reset_n, po_adc_cmd:reset_n, sysid_qsys:reset_n]
 
 begin
 
@@ -449,43 +434,34 @@ begin
 			freeze     => '0'                                             -- (terminated)
 		);
 
-	pio_adc_channel : component NIOS_II_debug_pio_adc_channel
+	pi_adc_channel_data_valid : component NIOS_II_debug_pi_adc_channel_data_valid
 		port map (
-			clk      => clk_clk,                                       --                 clk.clk
-			reset_n  => rst_controller_001_reset_out_reset_ports_inv,  --               reset.reset_n
-			address  => mm_interconnect_0_pio_adc_channel_s1_address,  --                  s1.address
-			readdata => mm_interconnect_0_pio_adc_channel_s1_readdata, --                    .readdata
-			in_port  => pio_adc_channel_external_connection_export     -- external_connection.export
+			clk      => clk_clk,                                                 --                 clk.clk
+			reset_n  => rst_controller_001_reset_out_reset_ports_inv,            --               reset.reset_n
+			address  => mm_interconnect_0_pi_adc_channel_data_valid_s1_address,  --                  s1.address
+			readdata => mm_interconnect_0_pi_adc_channel_data_valid_s1_readdata, --                    .readdata
+			in_port  => pi_adc_channel_data_valid_external_connection_export     -- external_connection.export
 		);
 
-	pio_adc_cmd : component NIOS_II_debug_pio_adc_cmd
-		port map (
-			clk        => clk_clk,                                          --                 clk.clk
-			reset_n    => rst_controller_001_reset_out_reset_ports_inv,     --               reset.reset_n
-			address    => mm_interconnect_0_pio_adc_cmd_s1_address,         --                  s1.address
-			write_n    => mm_interconnect_0_pio_adc_cmd_s1_write_ports_inv, --                    .write_n
-			writedata  => mm_interconnect_0_pio_adc_cmd_s1_writedata,       --                    .writedata
-			chipselect => mm_interconnect_0_pio_adc_cmd_s1_chipselect,      --                    .chipselect
-			readdata   => mm_interconnect_0_pio_adc_cmd_s1_readdata,        --                    .readdata
-			out_port   => pio_adc_cmd_external_connection_export            -- external_connection.export
-		);
-
-	pio_adc_data : component NIOS_II_debug_pio_adc_data
+	pi_adc_data : component NIOS_II_debug_pi_adc_data
 		port map (
 			clk      => clk_clk,                                      --                 clk.clk
 			reset_n  => rst_controller_001_reset_out_reset_ports_inv, --               reset.reset_n
-			address  => mm_interconnect_0_pio_adc_data_s1_address,    --                  s1.address
-			readdata => mm_interconnect_0_pio_adc_data_s1_readdata,   --                    .readdata
-			in_port  => pio_adc_data_external_connection_export       -- external_connection.export
+			address  => mm_interconnect_0_pi_adc_data_s1_address,     --                  s1.address
+			readdata => mm_interconnect_0_pi_adc_data_s1_readdata,    --                    .readdata
+			in_port  => pi_adc_data_external_connection_export        -- external_connection.export
 		);
 
-	pio_uart_data : component NIOS_II_debug_pio_uart_data
+	po_adc_cmd : component NIOS_II_debug_po_adc_cmd
 		port map (
-			clk      => clk_clk,                                      --                 clk.clk
-			reset_n  => rst_controller_001_reset_out_reset_ports_inv, --               reset.reset_n
-			address  => mm_interconnect_0_pio_uart_data_s1_address,   --                  s1.address
-			readdata => mm_interconnect_0_pio_uart_data_s1_readdata,  --                    .readdata
-			in_port  => pio_uart_data_external_connection_export      -- external_connection.export
+			clk        => clk_clk,                                         --                 clk.clk
+			reset_n    => rst_controller_001_reset_out_reset_ports_inv,    --               reset.reset_n
+			address    => mm_interconnect_0_po_adc_cmd_s1_address,         --                  s1.address
+			write_n    => mm_interconnect_0_po_adc_cmd_s1_write_ports_inv, --                    .write_n
+			writedata  => mm_interconnect_0_po_adc_cmd_s1_writedata,       --                    .writedata
+			chipselect => mm_interconnect_0_po_adc_cmd_s1_chipselect,      --                    .chipselect
+			readdata   => mm_interconnect_0_po_adc_cmd_s1_readdata,        --                    .readdata
+			out_port   => po_adc_cmd_external_connection_export            -- external_connection.export
 		);
 
 	sysid_qsys : component NIOS_II_debug_sysid_qsys
@@ -535,17 +511,15 @@ begin
 			onchip_memory2_s1_byteenable                 => mm_interconnect_0_onchip_memory2_s1_byteenable,            --                                       .byteenable
 			onchip_memory2_s1_chipselect                 => mm_interconnect_0_onchip_memory2_s1_chipselect,            --                                       .chipselect
 			onchip_memory2_s1_clken                      => mm_interconnect_0_onchip_memory2_s1_clken,                 --                                       .clken
-			pio_adc_channel_s1_address                   => mm_interconnect_0_pio_adc_channel_s1_address,              --                     pio_adc_channel_s1.address
-			pio_adc_channel_s1_readdata                  => mm_interconnect_0_pio_adc_channel_s1_readdata,             --                                       .readdata
-			pio_adc_cmd_s1_address                       => mm_interconnect_0_pio_adc_cmd_s1_address,                  --                         pio_adc_cmd_s1.address
-			pio_adc_cmd_s1_write                         => mm_interconnect_0_pio_adc_cmd_s1_write,                    --                                       .write
-			pio_adc_cmd_s1_readdata                      => mm_interconnect_0_pio_adc_cmd_s1_readdata,                 --                                       .readdata
-			pio_adc_cmd_s1_writedata                     => mm_interconnect_0_pio_adc_cmd_s1_writedata,                --                                       .writedata
-			pio_adc_cmd_s1_chipselect                    => mm_interconnect_0_pio_adc_cmd_s1_chipselect,               --                                       .chipselect
-			pio_adc_data_s1_address                      => mm_interconnect_0_pio_adc_data_s1_address,                 --                        pio_adc_data_s1.address
-			pio_adc_data_s1_readdata                     => mm_interconnect_0_pio_adc_data_s1_readdata,                --                                       .readdata
-			pio_uart_data_s1_address                     => mm_interconnect_0_pio_uart_data_s1_address,                --                       pio_uart_data_s1.address
-			pio_uart_data_s1_readdata                    => mm_interconnect_0_pio_uart_data_s1_readdata,               --                                       .readdata
+			pi_adc_channel_data_valid_s1_address         => mm_interconnect_0_pi_adc_channel_data_valid_s1_address,    --           pi_adc_channel_data_valid_s1.address
+			pi_adc_channel_data_valid_s1_readdata        => mm_interconnect_0_pi_adc_channel_data_valid_s1_readdata,   --                                       .readdata
+			pi_adc_data_s1_address                       => mm_interconnect_0_pi_adc_data_s1_address,                  --                         pi_adc_data_s1.address
+			pi_adc_data_s1_readdata                      => mm_interconnect_0_pi_adc_data_s1_readdata,                 --                                       .readdata
+			po_adc_cmd_s1_address                        => mm_interconnect_0_po_adc_cmd_s1_address,                   --                          po_adc_cmd_s1.address
+			po_adc_cmd_s1_write                          => mm_interconnect_0_po_adc_cmd_s1_write,                     --                                       .write
+			po_adc_cmd_s1_readdata                       => mm_interconnect_0_po_adc_cmd_s1_readdata,                  --                                       .readdata
+			po_adc_cmd_s1_writedata                      => mm_interconnect_0_po_adc_cmd_s1_writedata,                 --                                       .writedata
+			po_adc_cmd_s1_chipselect                     => mm_interconnect_0_po_adc_cmd_s1_chipselect,                --                                       .chipselect
 			sysid_qsys_control_slave_address             => mm_interconnect_0_sysid_qsys_control_slave_address,        --               sysid_qsys_control_slave.address
 			sysid_qsys_control_slave_readdata            => mm_interconnect_0_sysid_qsys_control_slave_readdata        --                                       .readdata
 		);
@@ -694,7 +668,7 @@ begin
 
 	mm_interconnect_0_jtag_uart_avalon_jtag_slave_write_ports_inv <= not mm_interconnect_0_jtag_uart_avalon_jtag_slave_write;
 
-	mm_interconnect_0_pio_adc_cmd_s1_write_ports_inv <= not mm_interconnect_0_pio_adc_cmd_s1_write;
+	mm_interconnect_0_po_adc_cmd_s1_write_ports_inv <= not mm_interconnect_0_po_adc_cmd_s1_write;
 
 	rst_controller_reset_out_reset_ports_inv <= not rst_controller_reset_out_reset;
 
