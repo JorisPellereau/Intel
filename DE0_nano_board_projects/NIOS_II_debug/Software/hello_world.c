@@ -15,9 +15,13 @@
  */
 
 #include <stdio.h>
-#include "system.h"
 #include <altera_avalon_pio_regs.h>
+#include <altera_avalon_uart_regs.h>
+#include <altera_avalon_uart.h>
 #include <time.h>
+#include <sys/alt_irq.h>
+#include <priv/alt_legacy_irq.h>
+#include "system.h"
 #include "unistd.h"
 
 // -- ADC channels
@@ -40,15 +44,62 @@
 // -------------
 
 void read_adc_test(char chx_on, char chx_off);
+void test_tx_uart(char data);
+
+// ISR for the uart
+void nios_rx_uart_isr(void* context, alt_u32 interrupt_number);
+
 
 int main()
 {
-  printf("Start of the program !!!!\n");
+	// Var local
+	int divider_uart;
+     void* ptr;
+	 char i;
+	 i = 0;
+	divider_uart = 0;
+
+	ptr = (void *)&i;
+
+
+
+
+	// INIT NIOS UART
+	divider_uart = IORD_ALTERA_AVALON_UART_DIVISOR(UART_NIOS_BASE);
+	printf("NIOS UART DIVIDER avant init : %d \n", divider_uart);
+	IOWR_ALTERA_AVALON_UART_DIVISOR(UART_MNG_NIOS_BASE, 5208);
+	divider_uart = IORD_ALTERA_AVALON_UART_DIVISOR(UART_NIOS_BASE);
+	printf("NIOS UART DIVIDER apres init : %d \n", divider_uart);
+
+	//IORD_ALTERA_AVALON_UART_CONTROL(UART_MNG_NIOS_BASE);
+	printf("Set IT for read data \n");
+	IOWR_ALTERA_AVALON_UART_CONTROL(UART_NIOS_BASE, ALTERA_AVALON_UART_CONTROL_RRDY_MSK);
+
+	printf("UART CONTROL REG : %d \n \n",IORD_ALTERA_AVALON_UART_CONTROL(UART_NIOS_BASE));
+
+
+	// INIT irq
+	//alt_irq_disable_all();
+	alt_irq_register(UART_NIOS_IRQ , ptr , nios_rx_uart_isr); // 2 : num IT
+	alt_irq_enable(UART_NIOS_IRQ);
+
+
+    printf("Start of the program !!!!\n");
+
 
 
   while(1) {
 
-	  read_adc_test(ch7_on, ch7_off);
+	  //read_adc_test(ch7_on, ch7_off);
+
+
+	  if(i == 255) {
+		  i = 0;
+	  }
+	  else {
+		  test_tx_uart(i);
+	  }
+
 
   }
 
@@ -77,4 +128,46 @@ void read_adc_test(char chx_on, char chx_off) {
 	}
 	usleep(10000);
 
+}
+
+/*
+ *
+ *
+ */
+void test_tx_uart(char tx_data) {
+
+
+	// Set the data to send
+
+	// Wait for the module done
+	if( (IORD_ALTERA_AVALON_PIO_DATA(UART_TX_RX_CMD_BASE) & 0x04) == 0x04) {
+		printf("Module TX_uart ready \n");
+		// Start a frame
+		IOWR_ALTERA_AVALON_PIO_DATA(UART_TX_RX_CMD_BASE, 0x1);
+		IOWR_ALTERA_AVALON_PIO_DATA(UART_TX_RX_CMD_BASE, 0x0);
+	}
+	else {
+		IOWR_ALTERA_AVALON_PIO_DATA(UART_TX_RX_CMD_BASE, 0x0);
+		printf("Module TX_uart busy \n");
+	}
+
+	//while((IORD_ALTERA_AVALON_UART_STATUS(UART_NIOS_BASE) & ALTERA_AVALON_UART_STATUS_RRDY_MSK) != ALTERA_AVALON_UART_STATUS_RRDY_MSK);
+	//printf("data_received : %x \n", IORD_ALTERA_AVALON_UART_RXDATA(UART_NIOS_BASE));
+	usleep(10000);
+	printf("\n\n");
+
+}
+
+
+void nios_rx_uart_isr(void* context, alt_u32 interrupt_number)
+{
+	char *i;
+    i = (char *)context;
+    *i += 1;
+
+
+	printf("UART CONTROL REG : %d \n \n",IORD_ALTERA_AVALON_UART_CONTROL(UART_NIOS_BASE));
+	printf("data_received : %x \n", IORD_ALTERA_AVALON_UART_RXDATA(UART_NIOS_BASE));
+	printf("NIOS UART read data available !!! \n\n\n");
+	IOWR_ALTERA_AVALON_PIO_DATA(UART_MNG_NIOS_BASE, *i);
 }
