@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="NIOS_II_debug" kind="NIOS_II_debug" version="1.0" fabric="QSYS">
  <!-- Format version 18.1 625 (Future versions may contain additional information.) -->
- <!-- 2019.06.21.16:52:18 -->
+ <!-- 2019.06.24.12:10:14 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1561128737</value>
+  <value>1561371013</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -7704,7 +7704,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.TIMESTAMP</name>
-   <value>1561128737</value>
+   <value>1561371013</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.compatible</name>
@@ -7724,7 +7724,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.dts.params.timestamp</name>
-   <value>1561128737</value>
+   <value>1561371013</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.vendor</name>
@@ -7740,7 +7740,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="timestamp">
    <type>int</type>
-   <value>1561128737</value>
+   <value>1561371013</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>false</visible>
@@ -8998,7 +8998,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.FIXED_BAUD</name>
-   <value>1</value>
+   <value>0</value>
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.FREQ</name>
@@ -9074,7 +9074,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="fixedBaud">
    <type>boolean</type>
-   <value>true</value>
+   <value>false</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>

@@ -15,17 +15,17 @@ preplace inst NIOS_II_debug.uart_tx_rx_cmd -pg 1 -lvl 3 -y 30
 preplace inst NIOS_II_debug.uart_nios -pg 1 -lvl 3 -y 750
 preplace inst NIOS_II_debug.sysid_qsys -pg 1 -lvl 3 -y 310
 preplace inst NIOS_II_debug.onchip_memory2 -pg 1 -lvl 3 -y 230
+preplace netloc EXPORT<net_container>NIOS_II_debug</net_container>(SLAVE)po_adc_cmd.external_connection,(SLAVE)NIOS_II_debug.po_adc_cmd_external_connection) 1 0 3 NJ 580 NJ 580 NJ
 preplace netloc EXPORT<net_container>NIOS_II_debug</net_container>(SLAVE)uart_nios.external_connection,(SLAVE)NIOS_II_debug.uart_nios_external_connection) 1 0 3 NJ 780 NJ 780 NJ
-preplace netloc FAN_OUT<net_container>NIOS_II_debug</net_container>(SLAVE)uart_mng_nios.clk,(SLAVE)pi_adc_data.clk,(SLAVE)uart_tx_rx_cmd.clk,(SLAVE)jtag_uart.clk,(MASTER)clk_50Mhz.clk,(SLAVE)uart_nios.clk,(SLAVE)onchip_memory2.clk1,(SLAVE)po_adc_cmd.clk,(SLAVE)CPU.clk,(SLAVE)pi_adc_channel_data_valid.clk,(SLAVE)sysid_qsys.clk) 1 1 2 410 800 870
-preplace netloc INTERCONNECT<net_container>NIOS_II_debug</net_container>(SLAVE)uart_nios.s1,(SLAVE)uart_mng_nios.s1,(SLAVE)po_adc_cmd.s1,(SLAVE)jtag_uart.avalon_jtag_slave,(SLAVE)pi_adc_data.s1,(SLAVE)uart_tx_rx_cmd.s1,(MASTER)CPU.instruction_master,(MASTER)CPU.data_master,(SLAVE)sysid_qsys.control_slave,(SLAVE)onchip_memory2.s1,(SLAVE)pi_adc_channel_data_valid.s1,(SLAVE)CPU.debug_mem_slave) 1 1 2 450 940 850
-preplace netloc INTERCONNECT<net_container>NIOS_II_debug</net_container>(SLAVE)uart_mng_nios.reset,(SLAVE)pi_adc_channel_data_valid.reset,(SLAVE)po_adc_cmd.reset,(SLAVE)jtag_uart.reset,(SLAVE)uart_tx_rx_cmd.reset,(SLAVE)pi_adc_data.reset,(MASTER)clk_50Mhz.clk_reset,(SLAVE)onchip_memory2.reset1,(SLAVE)sysid_qsys.reset,(SLAVE)CPU.reset,(MASTER)CPU.debug_reset_request,(SLAVE)uart_nios.reset) 1 1 2 430 920 830
-preplace netloc EXPORT<net_container>NIOS_II_debug</net_container>(SLAVE)NIOS_II_debug.po_adc_cmd_external_connection,(SLAVE)po_adc_cmd.external_connection) 1 0 3 NJ 580 NJ 580 NJ
+preplace netloc FAN_OUT<net_container>NIOS_II_debug</net_container>(SLAVE)uart_nios.clk,(SLAVE)sysid_qsys.clk,(SLAVE)CPU.clk,(SLAVE)jtag_uart.clk,(SLAVE)uart_mng_nios.clk,(SLAVE)pi_adc_data.clk,(SLAVE)uart_tx_rx_cmd.clk,(SLAVE)po_adc_cmd.clk,(MASTER)clk_50Mhz.clk,(SLAVE)onchip_memory2.clk1,(SLAVE)pi_adc_channel_data_valid.clk) 1 1 2 410 200 850
+preplace netloc INTERCONNECT<net_container>NIOS_II_debug</net_container>(SLAVE)po_adc_cmd.s1,(SLAVE)pi_adc_channel_data_valid.s1,(SLAVE)uart_tx_rx_cmd.s1,(SLAVE)CPU.debug_mem_slave,(SLAVE)onchip_memory2.s1,(SLAVE)uart_mng_nios.s1,(SLAVE)sysid_qsys.control_slave,(SLAVE)pi_adc_data.s1,(MASTER)CPU.instruction_master,(MASTER)CPU.data_master,(SLAVE)jtag_uart.avalon_jtag_slave,(SLAVE)uart_nios.s1) 1 1 2 450 220 810
+preplace netloc EXPORT<net_container>NIOS_II_debug</net_container>(SLAVE)NIOS_II_debug.reset,(SLAVE)clk_50Mhz.clk_in_reset) 1 0 1 NJ
+preplace netloc INTERCONNECT<net_container>NIOS_II_debug</net_container>(MASTER)CPU.debug_reset_request,(SLAVE)uart_nios.reset,(SLAVE)jtag_uart.reset,(SLAVE)pi_adc_channel_data_valid.reset,(SLAVE)po_adc_cmd.reset,(SLAVE)pi_adc_data.reset,(SLAVE)uart_mng_nios.reset,(MASTER)clk_50Mhz.clk_reset,(SLAVE)uart_tx_rx_cmd.reset,(SLAVE)CPU.reset,(SLAVE)onchip_memory2.reset1,(SLAVE)sysid_qsys.reset) 1 1 2 430 240 870
 preplace netloc EXPORT<net_container>NIOS_II_debug</net_container>(SLAVE)NIOS_II_debug.clk,(SLAVE)clk_50Mhz.clk_in) 1 0 1 NJ
-preplace netloc FAN_OUT<net_container>NIOS_II_debug</net_container>(MASTER)CPU.irq,(SLAVE)jtag_uart.irq,(SLAVE)uart_nios.irq) 1 2 1 810
+preplace netloc EXPORT<net_container>NIOS_II_debug</net_container>(SLAVE)NIOS_II_debug.pi_adc_channel_data_valid_external_connection,(SLAVE)pi_adc_channel_data_valid.external_connection) 1 0 3 NJ 680 NJ 680 NJ
 preplace netloc EXPORT<net_container>NIOS_II_debug</net_container>(SLAVE)uart_tx_rx_cmd.external_connection,(SLAVE)NIOS_II_debug.uart_tx_rx_cmd_external_connection) 1 0 3 NJ 60 NJ 60 NJ
 preplace netloc EXPORT<net_container>NIOS_II_debug</net_container>(SLAVE)NIOS_II_debug.uart_mng_nios_external_connection,(SLAVE)uart_mng_nios.external_connection) 1 0 3 NJ 900 NJ 900 NJ
-preplace netloc EXPORT<net_container>NIOS_II_debug</net_container>(SLAVE)clk_50Mhz.clk_in_reset,(SLAVE)NIOS_II_debug.reset) 1 0 1 NJ
 preplace netloc EXPORT<net_container>NIOS_II_debug</net_container>(SLAVE)NIOS_II_debug.pi_adc_data_external_connection,(SLAVE)pi_adc_data.external_connection) 1 0 3 NJ 480 NJ 480 NJ
-preplace netloc EXPORT<net_container>NIOS_II_debug</net_container>(SLAVE)pi_adc_channel_data_valid.external_connection,(SLAVE)NIOS_II_debug.pi_adc_channel_data_valid_external_connection) 1 0 3 NJ 680 NJ 680 NJ
+preplace netloc FAN_OUT<net_container>NIOS_II_debug</net_container>(SLAVE)uart_nios.irq,(MASTER)CPU.irq,(SLAVE)jtag_uart.irq) 1 2 1 830
 levelinfo -pg 1 0 200 1090
 levelinfo -hier NIOS_II_debug 210 240 570 910 1070
