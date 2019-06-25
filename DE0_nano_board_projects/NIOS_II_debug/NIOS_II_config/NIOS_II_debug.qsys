@@ -18,7 +18,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -39,7 +39,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -52,7 +52,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -60,7 +60,7 @@
    {
       datum baseAddress
       {
-         value = "69904";
+         value = "69936";
          type = "String";
       }
    }
@@ -73,7 +73,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -94,7 +94,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -102,7 +102,7 @@
    {
       datum baseAddress
       {
-         value = "69856";
+         value = "69888";
          type = "String";
       }
    }
@@ -115,7 +115,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -123,7 +123,23 @@
    {
       datum baseAddress
       {
-         value = "69872";
+         value = "69904";
+         type = "String";
+      }
+   }
+   element pio_eeprom_ctrl
+   {
+      datum _sortIndex
+      {
+         value = "11";
+         type = "int";
+      }
+   }
+   element pio_eeprom_ctrl.s1
+   {
+      datum baseAddress
+      {
+         value = "69840";
          type = "String";
       }
    }
@@ -136,7 +152,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -144,7 +160,7 @@
    {
       datum baseAddress
       {
-         value = "69840";
+         value = "69872";
          type = "String";
       }
    }
@@ -157,7 +173,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -165,7 +181,7 @@
    {
       datum baseAddress
       {
-         value = "69896";
+         value = "69928";
          type = "String";
       }
    }
@@ -228,7 +244,7 @@
    {
       datum baseAddress
       {
-         value = "69824";
+         value = "69856";
          type = "String";
       }
    }
@@ -262,6 +278,11 @@
  <interface
    name="pi_adc_data_external_connection"
    internal="pi_adc_data.external_connection"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="pio_eeprom_ctrl_external_connection"
+   internal="pio_eeprom_ctrl.external_connection"
    type="conduit"
    dir="end" />
  <interface
@@ -305,7 +326,7 @@
   <parameter name="dataAddrWidth" value="17" />
   <parameter name="dataMasterHighPerformanceAddrWidth" value="1" />
   <parameter name="dataMasterHighPerformanceMapParam" value="" />
-  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='onchip_memory2.s1' start='0x8000' end='0x10000' type='altera_avalon_onchip_memory2.s1' /><slave name='CPU.debug_mem_slave' start='0x10800' end='0x11000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='uart_mng_nios.s1' start='0x11040' end='0x11060' type='altera_avalon_pio.s1' /><slave name='uart_nios.s1' start='0x11060' end='0x11080' type='altera_avalon_uart.s1' /><slave name='uart_tx_rx_cmd.s1' start='0x110C0' end='0x110D0' type='altera_avalon_pio.s1' /><slave name='po_adc_cmd.s1' start='0x110D0' end='0x110E0' type='altera_avalon_pio.s1' /><slave name='pi_adc_channel_data_valid.s1' start='0x110E0' end='0x110F0' type='altera_avalon_pio.s1' /><slave name='pi_adc_data.s1' start='0x110F0' end='0x11100' type='altera_avalon_pio.s1' /><slave name='sysid_qsys.control_slave' start='0x11108' end='0x11110' type='altera_avalon_sysid_qsys.control_slave' /><slave name='jtag_uart.avalon_jtag_slave' start='0x11110' end='0x11118' type='altera_avalon_jtag_uart.avalon_jtag_slave' /></address-map>]]></parameter>
+  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='onchip_memory2.s1' start='0x8000' end='0x10000' type='altera_avalon_onchip_memory2.s1' /><slave name='CPU.debug_mem_slave' start='0x10800' end='0x11000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='uart_mng_nios.s1' start='0x11040' end='0x11060' type='altera_avalon_pio.s1' /><slave name='uart_nios.s1' start='0x11060' end='0x11080' type='altera_avalon_uart.s1' /><slave name='pio_eeprom_ctrl.s1' start='0x110D0' end='0x110E0' type='altera_avalon_pio.s1' /><slave name='uart_tx_rx_cmd.s1' start='0x110E0' end='0x110F0' type='altera_avalon_pio.s1' /><slave name='po_adc_cmd.s1' start='0x110F0' end='0x11100' type='altera_avalon_pio.s1' /><slave name='pi_adc_channel_data_valid.s1' start='0x11100' end='0x11110' type='altera_avalon_pio.s1' /><slave name='pi_adc_data.s1' start='0x11110' end='0x11120' type='altera_avalon_pio.s1' /><slave name='sysid_qsys.control_slave' start='0x11128' end='0x11130' type='altera_avalon_sysid_qsys.control_slave' /><slave name='jtag_uart.avalon_jtag_slave' start='0x11130' end='0x11138' type='altera_avalon_jtag_uart.avalon_jtag_slave' /></address-map>]]></parameter>
   <parameter name="data_master_high_performance_paddr_base" value="0" />
   <parameter name="data_master_high_performance_paddr_size" value="0" />
   <parameter name="data_master_paddr_base" value="0" />
@@ -344,7 +365,7 @@
   <parameter name="icache_tagramBlockType" value="Automatic" />
   <parameter name="impl" value="Tiny" />
   <parameter name="instAddrWidth" value="17" />
-  <parameter name="instSlaveMapParam"><![CDATA[<address-map><slave name='onchip_memory2.s1' start='0x8000' end='0x10000' type='altera_avalon_onchip_memory2.s1' /><slave name='CPU.debug_mem_slave' start='0x10800' end='0x11000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='uart_mng_nios.s1' start='0x11040' end='0x11060' type='altera_avalon_pio.s1' /><slave name='uart_nios.s1' start='0x11060' end='0x11080' type='altera_avalon_uart.s1' /><slave name='uart_tx_rx_cmd.s1' start='0x110C0' end='0x110D0' type='altera_avalon_pio.s1' /><slave name='po_adc_cmd.s1' start='0x110D0' end='0x110E0' type='altera_avalon_pio.s1' /><slave name='pi_adc_channel_data_valid.s1' start='0x110E0' end='0x110F0' type='altera_avalon_pio.s1' /><slave name='pi_adc_data.s1' start='0x110F0' end='0x11100' type='altera_avalon_pio.s1' /><slave name='sysid_qsys.control_slave' start='0x11108' end='0x11110' type='altera_avalon_sysid_qsys.control_slave' /></address-map>]]></parameter>
+  <parameter name="instSlaveMapParam"><![CDATA[<address-map><slave name='onchip_memory2.s1' start='0x8000' end='0x10000' type='altera_avalon_onchip_memory2.s1' /><slave name='CPU.debug_mem_slave' start='0x10800' end='0x11000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='uart_mng_nios.s1' start='0x11040' end='0x11060' type='altera_avalon_pio.s1' /><slave name='uart_nios.s1' start='0x11060' end='0x11080' type='altera_avalon_uart.s1' /><slave name='pio_eeprom_ctrl.s1' start='0x110D0' end='0x110E0' type='altera_avalon_pio.s1' /><slave name='uart_tx_rx_cmd.s1' start='0x110E0' end='0x110F0' type='altera_avalon_pio.s1' /><slave name='po_adc_cmd.s1' start='0x110F0' end='0x11100' type='altera_avalon_pio.s1' /><slave name='pi_adc_channel_data_valid.s1' start='0x11100' end='0x11110' type='altera_avalon_pio.s1' /><slave name='pi_adc_data.s1' start='0x11110' end='0x11120' type='altera_avalon_pio.s1' /><slave name='sysid_qsys.control_slave' start='0x11128' end='0x11130' type='altera_avalon_sysid_qsys.control_slave' /></address-map>]]></parameter>
   <parameter name="instructionMasterHighPerformanceAddrWidth" value="1" />
   <parameter name="instructionMasterHighPerformanceMapParam" value="" />
   <parameter name="instruction_master_high_performance_paddr_base" value="0" />
@@ -556,6 +577,24 @@
   <parameter name="simDrivenValue" value="0" />
   <parameter name="width" value="12" />
  </module>
+ <module
+   name="pio_eeprom_ctrl"
+   kind="altera_avalon_pio"
+   version="18.1"
+   enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="false" />
+  <parameter name="clockRate" value="50000000" />
+  <parameter name="direction" value="InOut" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="false" />
+  <parameter name="irqType" value="LEVEL" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="11" />
+ </module>
  <module name="po_adc_cmd" kind="altera_avalon_pio" version="18.1" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
@@ -635,6 +674,42 @@
    start="CPU.data_master"
    end="jtag_uart.avalon_jtag_slave">
   <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00011130" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="18.1"
+   start="CPU.data_master"
+   end="sysid_qsys.control_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00011128" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="18.1"
+   start="CPU.data_master"
+   end="CPU.debug_mem_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00010800" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="18.1"
+   start="CPU.data_master"
+   end="onchip_memory2.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x8000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="18.1"
+   start="CPU.data_master"
+   end="pi_adc_data.s1">
+  <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x00011110" />
   <parameter name="defaultConnection" value="false" />
  </connection>
@@ -642,45 +717,9 @@
    kind="avalon"
    version="18.1"
    start="CPU.data_master"
-   end="sysid_qsys.control_slave">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00011108" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
- <connection
-   kind="avalon"
-   version="18.1"
-   start="CPU.data_master"
-   end="CPU.debug_mem_slave">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00010800" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
- <connection
-   kind="avalon"
-   version="18.1"
-   start="CPU.data_master"
-   end="onchip_memory2.s1">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x8000" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
- <connection
-   kind="avalon"
-   version="18.1"
-   start="CPU.data_master"
-   end="pi_adc_data.s1">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x000110f0" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
- <connection
-   kind="avalon"
-   version="18.1"
-   start="CPU.data_master"
    end="pi_adc_channel_data_valid.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x000110e0" />
+  <parameter name="baseAddress" value="0x00011100" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -689,7 +728,7 @@
    start="CPU.data_master"
    end="po_adc_cmd.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x000110d0" />
+  <parameter name="baseAddress" value="0x000110f0" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -716,7 +755,16 @@
    start="CPU.data_master"
    end="uart_tx_rx_cmd.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x000110c0" />
+  <parameter name="baseAddress" value="0x000110e0" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="18.1"
+   start="CPU.data_master"
+   end="pio_eeprom_ctrl.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x000110d0" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -725,7 +773,7 @@
    start="CPU.instruction_master"
    end="sysid_qsys.control_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00011108" />
+  <parameter name="baseAddress" value="0x00011128" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -752,7 +800,7 @@
    start="CPU.instruction_master"
    end="pi_adc_data.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x000110f0" />
+  <parameter name="baseAddress" value="0x00011110" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -761,7 +809,7 @@
    start="CPU.instruction_master"
    end="pi_adc_channel_data_valid.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x000110e0" />
+  <parameter name="baseAddress" value="0x00011100" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -770,7 +818,7 @@
    start="CPU.instruction_master"
    end="po_adc_cmd.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x000110d0" />
+  <parameter name="baseAddress" value="0x000110f0" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -797,7 +845,16 @@
    start="CPU.instruction_master"
    end="uart_tx_rx_cmd.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x000110c0" />
+  <parameter name="baseAddress" value="0x000110e0" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="18.1"
+   start="CPU.instruction_master"
+   end="pio_eeprom_ctrl.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x000110d0" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection kind="clock" version="18.1" start="clk_50Mhz.clk" end="CPU.clk" />
@@ -833,6 +890,11 @@
    version="18.1"
    start="clk_50Mhz.clk"
    end="uart_tx_rx_cmd.clk" />
+ <connection
+   kind="clock"
+   version="18.1"
+   start="clk_50Mhz.clk"
+   end="pio_eeprom_ctrl.clk" />
  <connection
    kind="clock"
    version="18.1"
@@ -889,6 +951,11 @@
    version="18.1"
    start="clk_50Mhz.clk_reset"
    end="uart_tx_rx_cmd.reset" />
+ <connection
+   kind="reset"
+   version="18.1"
+   start="clk_50Mhz.clk_reset"
+   end="pio_eeprom_ctrl.reset" />
  <connection
    kind="reset"
    version="18.1"

@@ -11,6 +11,8 @@ entity NIOS_II_debug is
 		clk_clk                                              : in  std_logic                     := '0';             --                                           clk.clk
 		pi_adc_channel_data_valid_external_connection_export : in  std_logic_vector(3 downto 0)  := (others => '0'); -- pi_adc_channel_data_valid_external_connection.export
 		pi_adc_data_external_connection_export               : in  std_logic_vector(11 downto 0) := (others => '0'); --               pi_adc_data_external_connection.export
+		pio_eeprom_ctrl_external_connection_in_port          : in  std_logic_vector(10 downto 0) := (others => '0'); --           pio_eeprom_ctrl_external_connection.in_port
+		pio_eeprom_ctrl_external_connection_out_port         : out std_logic_vector(10 downto 0);                    --                                              .out_port
 		po_adc_cmd_external_connection_export                : out std_logic_vector(3 downto 0);                     --                po_adc_cmd_external_connection.export
 		reset_reset_n                                        : in  std_logic                     := '0';             --                                         reset.reset_n
 		uart_mng_nios_external_connection_in_port            : in  std_logic_vector(7 downto 0)  := (others => '0'); --             uart_mng_nios_external_connection.in_port
@@ -104,6 +106,20 @@ architecture rtl of NIOS_II_debug is
 			in_port  : in  std_logic_vector(11 downto 0) := (others => 'X')  -- export
 		);
 	end component NIOS_II_debug_pi_adc_data;
+
+	component NIOS_II_debug_pio_eeprom_ctrl is
+		port (
+			clk        : in  std_logic                     := 'X';             -- clk
+			reset_n    : in  std_logic                     := 'X';             -- reset_n
+			address    : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- address
+			write_n    : in  std_logic                     := 'X';             -- write_n
+			writedata  : in  std_logic_vector(31 downto 0) := (others => 'X'); -- writedata
+			chipselect : in  std_logic                     := 'X';             -- chipselect
+			readdata   : out std_logic_vector(31 downto 0);                    -- readdata
+			in_port    : in  std_logic_vector(10 downto 0) := (others => 'X'); -- export
+			out_port   : out std_logic_vector(10 downto 0)                     -- export
+		);
+	end component NIOS_II_debug_pio_eeprom_ctrl;
 
 	component NIOS_II_debug_po_adc_cmd is
 		port (
@@ -215,6 +231,11 @@ architecture rtl of NIOS_II_debug is
 			pi_adc_channel_data_valid_s1_readdata        : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
 			pi_adc_data_s1_address                       : out std_logic_vector(1 downto 0);                     -- address
 			pi_adc_data_s1_readdata                      : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
+			pio_eeprom_ctrl_s1_address                   : out std_logic_vector(1 downto 0);                     -- address
+			pio_eeprom_ctrl_s1_write                     : out std_logic;                                        -- write
+			pio_eeprom_ctrl_s1_readdata                  : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
+			pio_eeprom_ctrl_s1_writedata                 : out std_logic_vector(31 downto 0);                    -- writedata
+			pio_eeprom_ctrl_s1_chipselect                : out std_logic;                                        -- chipselect
 			po_adc_cmd_s1_address                        : out std_logic_vector(1 downto 0);                     -- address
 			po_adc_cmd_s1_write                          : out std_logic;                                        -- write
 			po_adc_cmd_s1_readdata                       : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
@@ -446,6 +467,11 @@ architecture rtl of NIOS_II_debug is
 	signal mm_interconnect_0_uart_tx_rx_cmd_s1_address                   : std_logic_vector(1 downto 0);  -- mm_interconnect_0:uart_tx_rx_cmd_s1_address -> uart_tx_rx_cmd:address
 	signal mm_interconnect_0_uart_tx_rx_cmd_s1_write                     : std_logic;                     -- mm_interconnect_0:uart_tx_rx_cmd_s1_write -> mm_interconnect_0_uart_tx_rx_cmd_s1_write:in
 	signal mm_interconnect_0_uart_tx_rx_cmd_s1_writedata                 : std_logic_vector(31 downto 0); -- mm_interconnect_0:uart_tx_rx_cmd_s1_writedata -> uart_tx_rx_cmd:writedata
+	signal mm_interconnect_0_pio_eeprom_ctrl_s1_chipselect               : std_logic;                     -- mm_interconnect_0:pio_eeprom_ctrl_s1_chipselect -> pio_eeprom_ctrl:chipselect
+	signal mm_interconnect_0_pio_eeprom_ctrl_s1_readdata                 : std_logic_vector(31 downto 0); -- pio_eeprom_ctrl:readdata -> mm_interconnect_0:pio_eeprom_ctrl_s1_readdata
+	signal mm_interconnect_0_pio_eeprom_ctrl_s1_address                  : std_logic_vector(1 downto 0);  -- mm_interconnect_0:pio_eeprom_ctrl_s1_address -> pio_eeprom_ctrl:address
+	signal mm_interconnect_0_pio_eeprom_ctrl_s1_write                    : std_logic;                     -- mm_interconnect_0:pio_eeprom_ctrl_s1_write -> mm_interconnect_0_pio_eeprom_ctrl_s1_write:in
+	signal mm_interconnect_0_pio_eeprom_ctrl_s1_writedata                : std_logic_vector(31 downto 0); -- mm_interconnect_0:pio_eeprom_ctrl_s1_writedata -> pio_eeprom_ctrl:writedata
 	signal irq_mapper_receiver0_irq                                      : std_logic;                     -- jtag_uart:av_irq -> irq_mapper:receiver0_irq
 	signal irq_mapper_receiver1_irq                                      : std_logic;                     -- uart_nios:irq -> irq_mapper:receiver1_irq
 	signal cpu_irq_irq                                                   : std_logic_vector(31 downto 0); -- irq_mapper:sender_irq -> CPU:irq
@@ -461,8 +487,9 @@ architecture rtl of NIOS_II_debug is
 	signal mm_interconnect_0_uart_nios_s1_write_ports_inv                : std_logic;                     -- mm_interconnect_0_uart_nios_s1_write:inv -> uart_nios:write_n
 	signal mm_interconnect_0_uart_mng_nios_s1_write_ports_inv            : std_logic;                     -- mm_interconnect_0_uart_mng_nios_s1_write:inv -> uart_mng_nios:write_n
 	signal mm_interconnect_0_uart_tx_rx_cmd_s1_write_ports_inv           : std_logic;                     -- mm_interconnect_0_uart_tx_rx_cmd_s1_write:inv -> uart_tx_rx_cmd:write_n
+	signal mm_interconnect_0_pio_eeprom_ctrl_s1_write_ports_inv          : std_logic;                     -- mm_interconnect_0_pio_eeprom_ctrl_s1_write:inv -> pio_eeprom_ctrl:write_n
 	signal rst_controller_reset_out_reset_ports_inv                      : std_logic;                     -- rst_controller_reset_out_reset:inv -> [CPU:reset_n, jtag_uart:rst_n]
-	signal rst_controller_001_reset_out_reset_ports_inv                  : std_logic;                     -- rst_controller_001_reset_out_reset:inv -> [pi_adc_channel_data_valid:reset_n, pi_adc_data:reset_n, po_adc_cmd:reset_n, sysid_qsys:reset_n, uart_mng_nios:reset_n, uart_nios:reset_n, uart_tx_rx_cmd:reset_n]
+	signal rst_controller_001_reset_out_reset_ports_inv                  : std_logic;                     -- rst_controller_001_reset_out_reset:inv -> [pi_adc_channel_data_valid:reset_n, pi_adc_data:reset_n, pio_eeprom_ctrl:reset_n, po_adc_cmd:reset_n, sysid_qsys:reset_n, uart_mng_nios:reset_n, uart_nios:reset_n, uart_tx_rx_cmd:reset_n]
 
 begin
 
@@ -541,6 +568,19 @@ begin
 			address  => mm_interconnect_0_pi_adc_data_s1_address,     --                  s1.address
 			readdata => mm_interconnect_0_pi_adc_data_s1_readdata,    --                    .readdata
 			in_port  => pi_adc_data_external_connection_export        -- external_connection.export
+		);
+
+	pio_eeprom_ctrl : component NIOS_II_debug_pio_eeprom_ctrl
+		port map (
+			clk        => clk_clk,                                              --                 clk.clk
+			reset_n    => rst_controller_001_reset_out_reset_ports_inv,         --               reset.reset_n
+			address    => mm_interconnect_0_pio_eeprom_ctrl_s1_address,         --                  s1.address
+			write_n    => mm_interconnect_0_pio_eeprom_ctrl_s1_write_ports_inv, --                    .write_n
+			writedata  => mm_interconnect_0_pio_eeprom_ctrl_s1_writedata,       --                    .writedata
+			chipselect => mm_interconnect_0_pio_eeprom_ctrl_s1_chipselect,      --                    .chipselect
+			readdata   => mm_interconnect_0_pio_eeprom_ctrl_s1_readdata,        --                    .readdata
+			in_port    => pio_eeprom_ctrl_external_connection_in_port,          -- external_connection.export
+			out_port   => pio_eeprom_ctrl_external_connection_out_port          --                    .export
 		);
 
 	po_adc_cmd : component NIOS_II_debug_po_adc_cmd
@@ -648,6 +688,11 @@ begin
 			pi_adc_channel_data_valid_s1_readdata        => mm_interconnect_0_pi_adc_channel_data_valid_s1_readdata,   --                                       .readdata
 			pi_adc_data_s1_address                       => mm_interconnect_0_pi_adc_data_s1_address,                  --                         pi_adc_data_s1.address
 			pi_adc_data_s1_readdata                      => mm_interconnect_0_pi_adc_data_s1_readdata,                 --                                       .readdata
+			pio_eeprom_ctrl_s1_address                   => mm_interconnect_0_pio_eeprom_ctrl_s1_address,              --                     pio_eeprom_ctrl_s1.address
+			pio_eeprom_ctrl_s1_write                     => mm_interconnect_0_pio_eeprom_ctrl_s1_write,                --                                       .write
+			pio_eeprom_ctrl_s1_readdata                  => mm_interconnect_0_pio_eeprom_ctrl_s1_readdata,             --                                       .readdata
+			pio_eeprom_ctrl_s1_writedata                 => mm_interconnect_0_pio_eeprom_ctrl_s1_writedata,            --                                       .writedata
+			pio_eeprom_ctrl_s1_chipselect                => mm_interconnect_0_pio_eeprom_ctrl_s1_chipselect,           --                                       .chipselect
 			po_adc_cmd_s1_address                        => mm_interconnect_0_po_adc_cmd_s1_address,                   --                          po_adc_cmd_s1.address
 			po_adc_cmd_s1_write                          => mm_interconnect_0_po_adc_cmd_s1_write,                     --                                       .write
 			po_adc_cmd_s1_readdata                       => mm_interconnect_0_po_adc_cmd_s1_readdata,                  --                                       .readdata
@@ -828,6 +873,8 @@ begin
 	mm_interconnect_0_uart_mng_nios_s1_write_ports_inv <= not mm_interconnect_0_uart_mng_nios_s1_write;
 
 	mm_interconnect_0_uart_tx_rx_cmd_s1_write_ports_inv <= not mm_interconnect_0_uart_tx_rx_cmd_s1_write;
+
+	mm_interconnect_0_pio_eeprom_ctrl_s1_write_ports_inv <= not mm_interconnect_0_pio_eeprom_ctrl_s1_write;
 
 	rst_controller_reset_out_reset_ports_inv <= not rst_controller_reset_out_reset;
 
